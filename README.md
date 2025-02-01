@@ -1,1 +1,2 @@
-# heart-failure-prediction
+ heart-failure-predictionHeart failure is a significant global health issue that requires early diagnosis for effective management. Traditional diagnostic methods are often subjective and resource-intensive, limiting their accessibility in many settings. There is a need for a more accurate, data-driven approach to predict heart failure risk and identify key contributing factors to enable timely interventions and personalized care.
+![image](https://github.com/user-attachments/assets/6179ff50-5faf-489e-945f-1007d358bb6f)
