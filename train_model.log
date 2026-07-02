@@ -1,0 +1,219 @@
+2026-07-02 01:20:08,094 [INFO] ============================================================
+2026-07-02 01:20:08,094 [INFO] Heart Failure Model Training Pipeline — Start
+2026-07-02 01:20:08,095 [INFO] ============================================================
+2026-07-02 01:20:08,095 [INFO] Loading clinical data from PostgreSQL
+2026-07-02 01:20:08,256 [INFO] Loaded 299 rows, 8 columns
+2026-07-02 01:20:08,256 [INFO] Engineering features
+2026-07-02 01:20:08,260 [INFO] Feature engineering complete: 12 total features
+2026-07-02 01:20:08,261 [INFO]   kidney_heart_risk positive: 22 patients
+2026-07-02 01:20:08,261 [INFO]   hyponatremia positive: 83 patients
+2026-07-02 01:20:08,263 [INFO] 
+Features used for training: ['serum_creatinine', 'ejection_fraction', 'age', 'serum_sodium', 'time', 'anaemia', 'high_blood_pressure', 'kidney_heart_risk', 'age_creatinine_interaction', 'hyponatremia', 'comorbidity_score']
+2026-07-02 01:20:08,265 [INFO] Class distribution: {0: np.int64(203), 1: np.int64(96)}
+2026-07-02 01:20:08,266 [INFO] Class imbalance ratio: 2.11:1
+2026-07-02 01:20:08,363 [INFO] 
+Train: 239 rows | Test: 60 rows
+2026-07-02 01:20:28,797 [INFO] 
+Training: XGBoost
+2026-07-02 01:20:33,857 [INFO] 
+==================================================
+2026-07-02 01:20:33,858 [INFO] XGBoost — Performance at threshold 0.3
+2026-07-02 01:20:33,858 [INFO] ==================================================
+2026-07-02 01:20:33,859 [INFO]   accuracy: 0.7833
+2026-07-02 01:20:33,859 [INFO]   precision: 0.65
+2026-07-02 01:20:33,860 [INFO]   recall: 0.6842
+2026-07-02 01:20:33,860 [INFO]   f1_score: 0.6667
+2026-07-02 01:20:33,860 [INFO]   roc_auc: 0.8575
+2026-07-02 01:20:33,861 [INFO]   decision_threshold: 0.3
+2026-07-02 01:20:33,862 [INFO] 
+  Confusion Matrix:
+2026-07-02 01:20:33,862 [INFO]   True Negatives  (Correct Survived): 34
+2026-07-02 01:20:33,863 [INFO]   False Positives (Over-flagged):      7
+2026-07-02 01:20:33,863 [INFO]   False Negatives (MISSED DEATHS):     6  ← minimize this
+2026-07-02 01:20:33,864 [INFO]   True Positives  (Correct Deaths):    13
+2026-07-02 01:20:33,875 [INFO] 
+              precision    recall  f1-score   support
+
+    Survived       0.85      0.83      0.84        41
+        Died       0.65      0.68      0.67        19
+
+    accuracy                           0.78        60
+   macro avg       0.75      0.76      0.75        60
+weighted avg       0.79      0.78      0.78        60
+
+2026-07-02 01:21:25,453 [INFO]   MLflow run ID: 86d0e58a57e941d0b6b68d4135594981
+2026-07-02 01:21:25,570 [INFO] 
+Training: Logistic Regression
+2026-07-02 01:21:25,711 [INFO] 
+==================================================
+2026-07-02 01:21:25,713 [INFO] Logistic Regression — Performance at threshold 0.3
+2026-07-02 01:21:25,722 [INFO] ==================================================
+2026-07-02 01:21:25,723 [INFO]   accuracy: 0.7333
+2026-07-02 01:21:25,724 [INFO]   precision: 0.5484
+2026-07-02 01:21:25,726 [INFO]   recall: 0.8947
+2026-07-02 01:21:25,727 [INFO]   f1_score: 0.68
+2026-07-02 01:21:25,727 [INFO]   roc_auc: 0.8819
+2026-07-02 01:21:25,728 [INFO]   decision_threshold: 0.3
+2026-07-02 01:21:25,728 [INFO] 
+  Confusion Matrix:
+2026-07-02 01:21:25,728 [INFO]   True Negatives  (Correct Survived): 27
+2026-07-02 01:21:25,729 [INFO]   False Positives (Over-flagged):      14
+2026-07-02 01:21:25,729 [INFO]   False Negatives (MISSED DEATHS):     2  ← minimize this
+2026-07-02 01:21:25,730 [INFO]   True Positives  (Correct Deaths):    17
+2026-07-02 01:21:25,746 [INFO] 
+              precision    recall  f1-score   support
+
+    Survived       0.93      0.66      0.77        41
+        Died       0.55      0.89      0.68        19
+
+    accuracy                           0.73        60
+   macro avg       0.74      0.78      0.73        60
+weighted avg       0.81      0.73      0.74        60
+
+2026-07-02 01:23:24,531 [INFO] ============================================================
+2026-07-02 01:23:24,531 [INFO] Heart Failure Model Training Pipeline — Start
+2026-07-02 01:23:24,532 [INFO] ============================================================
+2026-07-02 01:23:24,532 [INFO] Loading clinical data from PostgreSQL
+2026-07-02 01:23:25,425 [INFO] Loaded 299 rows, 8 columns
+2026-07-02 01:23:25,431 [INFO] Engineering features
+2026-07-02 01:23:25,442 [INFO] Feature engineering complete: 12 total features
+2026-07-02 01:23:25,444 [INFO]   kidney_heart_risk positive: 22 patients
+2026-07-02 01:23:25,445 [INFO]   hyponatremia positive: 83 patients
+2026-07-02 01:23:25,456 [INFO] 
+Features used for training: ['serum_creatinine', 'ejection_fraction', 'age', 'serum_sodium', 'time', 'anaemia', 'high_blood_pressure', 'kidney_heart_risk', 'age_creatinine_interaction', 'hyponatremia', 'comorbidity_score']
+2026-07-02 01:23:25,458 [INFO] Class distribution: {0: np.int64(203), 1: np.int64(96)}
+2026-07-02 01:23:25,461 [INFO] Class imbalance ratio: 2.11:1
+2026-07-02 01:23:25,525 [INFO] 
+Train: 239 rows | Test: 60 rows
+2026-07-02 01:23:27,119 [INFO] 
+Training: XGBoost
+2026-07-02 01:23:28,735 [INFO] 
+==================================================
+2026-07-02 01:23:28,735 [INFO] XGBoost — Performance at threshold 0.3
+2026-07-02 01:23:28,737 [INFO] ==================================================
+2026-07-02 01:23:28,741 [INFO]   accuracy: 0.7833
+2026-07-02 01:23:28,742 [INFO]   precision: 0.65
+2026-07-02 01:23:28,742 [INFO]   recall: 0.6842
+2026-07-02 01:23:28,743 [INFO]   f1_score: 0.6667
+2026-07-02 01:23:28,744 [INFO]   roc_auc: 0.8575
+2026-07-02 01:23:28,745 [INFO]   decision_threshold: 0.3
+2026-07-02 01:23:28,746 [INFO] 
+  Confusion Matrix:
+2026-07-02 01:23:28,746 [INFO]   True Negatives  (Correct Survived): 34
+2026-07-02 01:23:28,747 [INFO]   False Positives (Over-flagged):      7
+2026-07-02 01:23:28,748 [INFO]   False Negatives (MISSED DEATHS):     6  ← minimize this
+2026-07-02 01:23:28,749 [INFO]   True Positives  (Correct Deaths):    13
+2026-07-02 01:23:28,763 [INFO] 
+              precision    recall  f1-score   support
+
+    Survived       0.85      0.83      0.84        41
+        Died       0.65      0.68      0.67        19
+
+    accuracy                           0.78        60
+   macro avg       0.75      0.76      0.75        60
+weighted avg       0.79      0.78      0.78        60
+
+2026-07-02 01:23:38,547 [INFO]   MLflow run ID: cd155083dad648df85946b50238292fb
+2026-07-02 01:23:38,674 [INFO] 
+Training: Logistic Regression
+2026-07-02 01:23:38,787 [INFO] 
+==================================================
+2026-07-02 01:23:38,789 [INFO] Logistic Regression — Performance at threshold 0.3
+2026-07-02 01:23:38,802 [INFO] ==================================================
+2026-07-02 01:23:38,803 [INFO]   accuracy: 0.7333
+2026-07-02 01:23:38,804 [INFO]   precision: 0.5484
+2026-07-02 01:23:38,807 [INFO]   recall: 0.8947
+2026-07-02 01:23:38,808 [INFO]   f1_score: 0.68
+2026-07-02 01:23:38,811 [INFO]   roc_auc: 0.8819
+2026-07-02 01:23:38,821 [INFO]   decision_threshold: 0.3
+2026-07-02 01:23:38,828 [INFO] 
+  Confusion Matrix:
+2026-07-02 01:23:38,830 [INFO]   True Negatives  (Correct Survived): 27
+2026-07-02 01:23:38,831 [INFO]   False Positives (Over-flagged):      14
+2026-07-02 01:23:38,831 [INFO]   False Negatives (MISSED DEATHS):     2  ← minimize this
+2026-07-02 01:23:38,832 [INFO]   True Positives  (Correct Deaths):    17
+2026-07-02 01:23:38,850 [INFO] 
+              precision    recall  f1-score   support
+
+    Survived       0.93      0.66      0.77        41
+        Died       0.55      0.89      0.68        19
+
+    accuracy                           0.73        60
+   macro avg       0.74      0.78      0.73        60
+weighted avg       0.81      0.73      0.74        60
+
+2026-07-02 01:23:53,943 [INFO]   MLflow run ID: 679fdd32a88144b9ae426369d9bd7be2
+2026-07-02 01:23:54,100 [INFO] 
+Training: Random Forest
+2026-07-02 01:23:54,624 [INFO] 
+==================================================
+2026-07-02 01:23:54,624 [INFO] Random Forest — Performance at threshold 0.3
+2026-07-02 01:23:54,625 [INFO] ==================================================
+2026-07-02 01:23:54,625 [INFO]   accuracy: 0.7833
+2026-07-02 01:23:54,626 [INFO]   precision: 0.6154
+2026-07-02 01:23:54,627 [INFO]   recall: 0.8421
+2026-07-02 01:23:54,627 [INFO]   f1_score: 0.7111
+2026-07-02 01:23:54,628 [INFO]   roc_auc: 0.8999
+2026-07-02 01:23:54,628 [INFO]   decision_threshold: 0.3
+2026-07-02 01:23:54,629 [INFO] 
+  Confusion Matrix:
+2026-07-02 01:23:54,629 [INFO]   True Negatives  (Correct Survived): 31
+2026-07-02 01:23:54,630 [INFO]   False Positives (Over-flagged):      10
+2026-07-02 01:23:54,630 [INFO]   False Negatives (MISSED DEATHS):     3  ← minimize this
+2026-07-02 01:23:54,630 [INFO]   True Positives  (Correct Deaths):    16
+2026-07-02 01:23:54,645 [INFO] 
+              precision    recall  f1-score   support
+
+    Survived       0.91      0.76      0.83        41
+        Died       0.62      0.84      0.71        19
+
+    accuracy                           0.78        60
+   macro avg       0.76      0.80      0.77        60
+weighted avg       0.82      0.78      0.79        60
+
+2026-07-02 01:24:09,727 [INFO]   MLflow run ID: 804b7e6d374843c6af5a3bc5e731750c
+2026-07-02 01:24:09,803 [INFO] 
+============================================================
+2026-07-02 01:24:09,804 [INFO] MODEL COMPARISON — Primary metric: RECALL (death class)
+2026-07-02 01:24:09,805 [INFO] ============================================================
+2026-07-02 01:24:09,805 [INFO] 
+XGBoost:
+2026-07-02 01:24:09,806 [INFO]   Recall:    0.6842 ← PRIMARY METRIC
+2026-07-02 01:24:09,806 [INFO]   ROC-AUC:   0.8575
+2026-07-02 01:24:09,807 [INFO]   Precision: 0.65
+2026-07-02 01:24:09,807 [INFO]   F1:        0.6667
+2026-07-02 01:24:09,808 [INFO] 
+Logistic Regression:
+2026-07-02 01:24:09,808 [INFO]   Recall:    0.8947 ← PRIMARY METRIC
+2026-07-02 01:24:09,809 [INFO]   ROC-AUC:   0.8819
+2026-07-02 01:24:09,809 [INFO]   Precision: 0.5484
+2026-07-02 01:24:09,810 [INFO]   F1:        0.68
+2026-07-02 01:24:09,810 [INFO] 
+Random Forest:
+2026-07-02 01:24:09,811 [INFO]   Recall:    0.8421 ← PRIMARY METRIC
+2026-07-02 01:24:09,811 [INFO]   ROC-AUC:   0.8999
+2026-07-02 01:24:09,812 [INFO]   Precision: 0.6154
+2026-07-02 01:24:09,812 [INFO]   F1:        0.7111
+2026-07-02 01:24:09,813 [INFO] 
+============================================================
+2026-07-02 01:24:09,813 [INFO] BEST MODEL: Logistic Regression
+2026-07-02 01:24:09,814 [INFO]   Recall: 0.8947
+2026-07-02 01:24:09,815 [INFO]   Run ID: 679fdd32a88144b9ae426369d9bd7be2
+2026-07-02 01:24:09,815 [INFO]   Decision threshold: 0.3
+2026-07-02 01:24:09,816 [INFO] ============================================================
+2026-07-02 01:24:09,830 [INFO] 
+XGBoost Feature Importance (descending):
+2026-07-02 01:24:09,832 [INFO]   time: 0.2413
+2026-07-02 01:24:09,833 [INFO]   ejection_fraction: 0.1311
+2026-07-02 01:24:09,835 [INFO]   serum_creatinine: 0.1207
+2026-07-02 01:24:09,837 [INFO]   age_creatinine_interaction: 0.1064
+2026-07-02 01:24:09,838 [INFO]   kidney_heart_risk: 0.0765
+2026-07-02 01:24:09,839 [INFO]   age: 0.0611
+2026-07-02 01:24:09,839 [INFO]   anaemia: 0.0577
+2026-07-02 01:24:09,840 [INFO]   comorbidity_score: 0.0539
+2026-07-02 01:24:09,841 [INFO]   hyponatremia: 0.0533
+2026-07-02 01:24:09,841 [INFO]   serum_sodium: 0.0515
+2026-07-02 01:24:09,842 [INFO]   high_blood_pressure: 0.0464
+2026-07-02 01:24:09,861 [INFO] 
+=== Training Pipeline Complete ===
+2026-07-02 01:24:09,862 [INFO] View results: mlflow ui --backend-store-uri sqlite:///mlflow.db

@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: hf_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: heart_failure_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - hf_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: hf_Dockerfile
+    container_name: hf_api
+    restart: always
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: heart_failure_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+volumes:
+  hf_pgdata:

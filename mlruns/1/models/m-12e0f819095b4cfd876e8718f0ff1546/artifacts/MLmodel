@@ -1,0 +1,22 @@
+artifact_path: C:\Users\UserAdmin\Desktop\heart failure prediction/mlruns/1/models/m-12e0f819095b4cfd876e8718f0ff1546/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.12.3
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.3.0
+mlflow_version: 3.14.0
+model_id: m-12e0f819095b4cfd876e8718f0ff1546
+model_size_bytes: 249870
+model_uuid: m-12e0f819095b4cfd876e8718f0ff1546
+prompts: null
+run_id: cd155083dad648df85946b50238292fb
+utc_time_created: '2026-07-02 08:23:30.500385'

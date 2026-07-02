@@ -1,0 +1,45 @@
+2026-07-02 03:15:33,417 [INFO] ============================================================
+2026-07-02 03:15:33,418 [INFO] Heart Failure Drift Monitoring — Start
+2026-07-02 03:15:33,418 [INFO] Timestamp: 20260702_031533
+2026-07-02 03:15:33,419 [INFO] ============================================================
+2026-07-02 03:15:34,252 [INFO] Clinical data loaded: 299 rows
+2026-07-02 03:15:34,289 [INFO] Diagnostic data loaded: 917 rows
+2026-07-02 03:15:34,346 [INFO] Predictions loaded: 1 rows
+2026-07-02 03:15:34,349 [INFO] No reference found for clinical — creating baseline snapshot
+2026-07-02 03:15:34,360 [INFO] Reference saved: reports/reference/clinical_reference.csv
+2026-07-02 03:15:34,364 [INFO] No reference found for diagnostic — creating baseline snapshot
+2026-07-02 03:15:34,374 [INFO] Reference saved: reports/reference/diagnostic_reference.csv
+2026-07-02 03:15:34,375 [INFO] Running drift analysis: Clinical Patient Data Drift
+2026-07-02 03:15:37,010 [INFO] Report saved: reports/drift/clinical_drift_20260702_031533.html
+2026-07-02 03:15:37,017 [INFO] Running drift analysis: Diagnostic Patient Data Drift
+2026-07-02 03:15:39,244 [INFO] Report saved: reports/drift/diagnostic_drift_20260702_031533.html
+2026-07-02 03:15:39,251 [INFO] 
+============================================================
+2026-07-02 03:15:39,252 [INFO] DRIFT MONITORING SUMMARY
+2026-07-02 03:15:39,252 [INFO] ============================================================
+2026-07-02 03:15:39,253 [INFO] 
+Clinical Dataset:
+2026-07-02 03:15:39,254 [INFO]   Patients:           299
+2026-07-02 03:15:39,254 [INFO]   Avg age:            60.8
+2026-07-02 03:15:39,255 [INFO]   Avg EF:             38.1%
+2026-07-02 03:15:39,256 [INFO]   Avg creatinine:     1.39
+2026-07-02 03:15:39,257 [INFO]   Death rate:         32.1%
+2026-07-02 03:15:39,257 [INFO] 
+Diagnostic Dataset:
+2026-07-02 03:15:39,258 [INFO]   Patients:           917
+2026-07-02 03:15:39,259 [INFO]   Avg age:            53.5
+2026-07-02 03:15:39,259 [INFO]   Avg max HR:         136.8
+2026-07-02 03:15:39,260 [INFO]   Disease rate:       55.3%
+2026-07-02 03:15:39,260 [INFO] 
+Prediction Statistics:
+2026-07-02 03:15:39,261 [INFO]   Total predictions:  1
+2026-07-02 03:15:39,261 [INFO]   Avg probability:    0.969
+2026-07-02 03:15:39,263 [INFO]   High risk:         1 (100.0%)
+2026-07-02 03:15:39,264 [INFO] ============================================================
+2026-07-02 03:15:39,265 [INFO] 
+=== Drift Monitoring Complete ===
+2026-07-02 03:15:39,266 [INFO] Reports saved to: reports/drift/
+2026-07-02 03:15:39,266 [INFO]   Clinical drift:    reports/drift/clinical_drift_20260702_031533.html
+2026-07-02 03:15:39,267 [INFO]   Diagnostic drift:  reports/drift/diagnostic_drift_20260702_031533.html
+2026-07-02 03:15:39,267 [INFO] 
+Open these HTML files in your browser to view full reports.

@@ -1,0 +1,7 @@
+Model: Random Forest
+Threshold: 0.3
+
+[[31 10]
+ [ 3 16]]
+
+False Negatives (missed deaths): 3

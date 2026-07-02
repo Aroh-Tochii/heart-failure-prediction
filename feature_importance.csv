@@ -1,0 +1,12 @@
+feature,importance
+time,0.24133259
+ejection_fraction,0.13113448
+serum_creatinine,0.12068649
+age_creatinine_interaction,0.106445685
+kidney_heart_risk,0.07645163
+age,0.06111476
+anaemia,0.05768032
+comorbidity_score,0.053895354
+hyponatremia,0.053327665
+serum_sodium,0.051527943
+high_blood_pressure,0.04640303

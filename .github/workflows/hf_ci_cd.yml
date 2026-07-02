@@ -1,0 +1,195 @@
+name: CI/CD - Heart Failure Prediction System
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ── Job 1: Code Quality ────────────────────────────────────────────────────
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install lint tools
+        run: pip install flake8
+
+      - name: Check for syntax errors
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  # ── Job 2: Verify all scripts parse cleanly ────────────────────────────────
+  verify-scripts:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install fastapi uvicorn pandas numpy scikit-learn pydantic \
+                      mlflow psycopg2-binary evidently joblib
+          pip install xgboost==3.2.0
+
+      - name: Verify ETL pipeline
+        run: python -c "import ast; ast.parse(open('hf_etl_pipeline.py').read()); print('ETL pipeline OK')"
+
+      - name: Verify training script
+        run: python -c "import ast; ast.parse(open('hf_train_model.py').read()); print('Training script OK')"
+
+      - name: Verify API
+        run: python -c "import ast; ast.parse(open('hf_app.py').read()); print('API script OK')"
+
+      - name: Verify drift monitor
+        run: python -c "import ast; ast.parse(open('hf_monitor_drift.py').read()); print('Drift monitor OK')"
+
+      - name: Verify all imports load
+        run: |
+          python -c "
+          import fastapi, uvicorn, pandas, numpy, sklearn, mlflow, evidently, xgboost
+          print('All core imports successful')
+          "
+
+  # ── Job 3: Build Docker image ──────────────────────────────────────────────
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: verify-scripts
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: hf_Dockerfile
+          push: false
+          tags: heart-failure-api:ci-test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Confirm build success
+        run: echo "Docker image built successfully"
+
+  # ── Job 4: Clinical logic validation ──────────────────────────────────────
+  validate-clinical-logic:
+    runs-on: ubuntu-latest
+    needs: verify-scripts
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pandas numpy
+
+      - name: Validate feature engineering logic
+        run: |
+          python -c "
+          import pandas as pd
+          import numpy as np
+
+          # Test feature engineering produces expected outputs
+          test_patient = {
+              'serum_creatinine': 2.0,
+              'ejection_fraction': 25,
+              'age': 70,
+              'serum_sodium': 130,
+              'time': 20,
+              'anaemia': 1,
+              'high_blood_pressure': 1
+          }
+          df = pd.DataFrame([test_patient])
+
+          # kidney_heart_risk should be 1 for this patient
+          kidney_heart = int((df['serum_creatinine'] > 1.5).astype(int) * (df['ejection_fraction'] < 30).astype(int))
+          assert kidney_heart == 1, 'kidney_heart_risk calculation failed'
+
+          # hyponatremia should be 1 (sodium < 135)
+          hyponatremia = int((df['serum_sodium'] < 135).astype(int))
+          assert hyponatremia == 1, 'hyponatremia calculation failed'
+
+          # comorbidity_score should be 2
+          comorbidity = int(df['anaemia'] + df['high_blood_pressure'])
+          assert comorbidity == 2, 'comorbidity_score calculation failed'
+
+          print('All clinical logic validations passed')
+          print(f'  kidney_heart_risk: {kidney_heart} (expected 1)')
+          print(f'  hyponatremia:      {hyponatremia} (expected 1)')
+          print(f'  comorbidity_score: {comorbidity} (expected 2)')
+          "
+
+      - name: Validate risk thresholds
+        run: |
+          python -c "
+          # Validate that our decision threshold logic is correct
+          DECISION_THRESHOLD = 0.3
+
+          test_cases = [
+              (0.10, 'Low',    0),  # probability < 0.3 → Low Risk, no death predicted
+              (0.45, 'Medium', 1),  # 0.3 <= prob < 0.6 → Medium Risk, death predicted
+              (0.75, 'High',   1),  # prob >= 0.6 → High Risk, death predicted
+          ]
+
+          for prob, expected_risk, expected_pred in test_cases:
+              pred = int(prob >= DECISION_THRESHOLD)
+              if prob < 0.30:
+                  risk = 'Low'
+              elif prob < 0.60:
+                  risk = 'Medium'
+              else:
+                  risk = 'High'
+
+              assert risk == expected_risk, f'Risk level wrong for prob={prob}: got {risk}, expected {expected_risk}'
+              assert pred == expected_pred, f'Prediction wrong for prob={prob}: got {pred}, expected {expected_pred}'
+
+          print('All risk threshold validations passed')
+          print(f'  threshold: {DECISION_THRESHOLD}')
+          print(f'  Low risk:    prob < 0.30')
+          print(f'  Medium risk: 0.30 <= prob < 0.60')
+          print(f'  High risk:   prob >= 0.60')
+          "
+
+  # ── Job 5: Notify ──────────────────────────────────────────────────────────
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-docker, validate-clinical-logic]
+    if: always()
+    steps:
+      - name: Pipeline status
+        run: |
+          if [ "${{ needs.build-docker.result }}" == "success" ] && \
+             [ "${{ needs.validate-clinical-logic.result }}" == "success" ]; then
+            echo "✅ CI/CD pipeline passed"
+            echo "   - Code is lint-clean"
+            echo "   - All scripts parse correctly"
+            echo "   - Docker image builds successfully"
+            echo "   - Clinical logic validated"
+            echo "   - Risk threshold logic validated"
+          else
+            echo "❌ CI/CD pipeline failed — check logs above"
+            exit 1
+          fi

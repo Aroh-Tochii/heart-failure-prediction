@@ -1,0 +1,10 @@
+2026-07-02 01:59:24,234 [INFO] Loading models from MLflow...
+2026-07-02 01:59:24,448 [INFO] 1 change detected
+2026-07-02 01:59:50,674 [INFO] Death risk model loaded — Recall: 0.8947
+2026-07-02 01:59:50,674 [INFO] Models loaded: ['death_risk']
+2026-07-02 01:59:51,120 [INFO] 1 change detected
+2026-07-02 01:59:51,472 [INFO] 1 change detected
+2026-07-02 02:04:53,112 [INFO] Death risk prediction: prob=0.9691, risk=High, flags=4
+2026-07-02 02:04:53,638 [INFO] 1 change detected
+2026-07-02 02:17:32,367 [INFO] 4 changes detected
+2026-07-02 02:17:32,773 [INFO] 1 change detected
