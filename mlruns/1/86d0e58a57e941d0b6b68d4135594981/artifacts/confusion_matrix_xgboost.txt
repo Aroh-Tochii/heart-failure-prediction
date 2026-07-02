@@ -1,7 +1,0 @@
-Model: XGBoost
-Threshold: 0.3
-
-[[34  7]
- [ 6 13]]
-
-False Negatives (missed deaths): 6

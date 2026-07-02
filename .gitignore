@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.log
+mlruns/
+*.zip
+~$*
+.env
+reports/drift/
+reports/reference/
+confusion_matrix_*.txt
+train_model.log
+drift_monitor.log
+api.log
+etl_pipeline.log

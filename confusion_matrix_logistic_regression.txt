@@ -1,7 +1,0 @@
-Model: Logistic Regression
-Threshold: 0.3
-
-[[27 14]
- [ 2 17]]
-
-False Negatives (missed deaths): 2
