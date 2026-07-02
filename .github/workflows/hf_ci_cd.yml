@@ -74,6 +74,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Prepare MLflow artifacts for Docker build
+        run: |
+          mkdir -p mlruns/1/models/ci-stub/artifacts
+          cat > mlruns/1/models/ci-stub/artifacts/MLmodel << 'EOF'
+          artifact_path: /app/mlruns/1/models/ci-stub/artifacts
+          flavors:
+            sklearn:
+              pickled_model: model.skops
+              serialization_format: skops
+              sklearn_version: 1.9.0
+          mlflow_version: 3.14.0
+          run_id: ci-stub
+          EOF
+          touch mlruns/1/models/ci-stub/artifacts/model.skops
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
