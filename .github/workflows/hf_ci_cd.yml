@@ -112,7 +112,6 @@ jobs:
           import pandas as pd
           import numpy as np
 
-          # Test feature engineering produces expected outputs
           test_patient = {
               'serum_creatinine': 2.0,
               'ejection_fraction': 25,
@@ -124,22 +123,19 @@ jobs:
           }
           df = pd.DataFrame([test_patient])
 
-          # kidney_heart_risk should be 1 for this patient
-          kidney_heart = int((df['serum_creatinine'] > 1.5).astype(int) * (df['ejection_fraction'] < 30).astype(int))
+          kidney_heart = int((df['serum_creatinine'].iloc[0] > 1.5) and (df['ejection_fraction'].iloc[0] < 30))
           assert kidney_heart == 1, 'kidney_heart_risk calculation failed'
 
-          # hyponatremia should be 1 (sodium < 135)
-          hyponatremia = int((df['serum_sodium'] < 135).astype(int))
+          hyponatremia = int(df['serum_sodium'].iloc[0] < 135)
           assert hyponatremia == 1, 'hyponatremia calculation failed'
 
-          # comorbidity_score should be 2
-          comorbidity = int(df['anaemia'] + df['high_blood_pressure'])
+          comorbidity = int(df['anaemia'].iloc[0] + df['high_blood_pressure'].iloc[0])
           assert comorbidity == 2, 'comorbidity_score calculation failed'
 
           print('All clinical logic validations passed')
-          print(f'  kidney_heart_risk: {kidney_heart} (expected 1)')
-          print(f'  hyponatremia:      {hyponatremia} (expected 1)')
-          print(f'  comorbidity_score: {comorbidity} (expected 2)')
+          print(f'  kidney_heart_risk: {kidney_heart}')
+          print(f'  hyponatremia:      {hyponatremia}')
+          print(f'  comorbidity_score: {comorbidity}')
           "
 
       - name: Validate risk thresholds
