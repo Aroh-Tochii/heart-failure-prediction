@@ -1,0 +1,108 @@
+# Heart Failure Risk Factor Explanations
+# Source: NIH Clinical Center, ACC/AHA Guidelines, WHO Reference Ranges
+# For demonstration purposes only — not for clinical use
+
+## EJECTION FRACTION EXPLAINED
+
+What it is:
+Ejection fraction is the percentage of blood that the left ventricle pumps 
+out with each heartbeat. If the ventricle contains 100ml of blood and pumps 
+out 55ml, the EF is 55%.
+
+Why it matters in heart failure:
+A reduced EF means the heart is not pumping efficiently. The body compensates 
+by activating hormonal systems (RAAS, sympathetic nervous system) which 
+temporarily maintain blood pressure but ultimately cause further cardiac damage.
+
+Clinical thresholds used in this system:
+- EF below 40%: Reduced — qualifies as HFrEF
+- EF below 30%: Severely reduced — high risk flag triggered
+- EF below 20%: Critical — immediate escalation required
+
+Real data from this patient population:
+- Patients who survived averaged EF of 40.3%
+- Patients who died averaged EF of 33.5%
+- Difference of 6.8% is clinically and statistically significant
+
+## SERUM CREATININE EXPLAINED
+
+What it is:
+Creatinine is a waste product produced by muscle metabolism. The kidneys 
+filter it from the blood. When kidneys are stressed or failing, creatinine 
+accumulates in the blood, causing elevated serum levels.
+
+Why it matters in heart failure:
+Poor cardiac output reduces blood flow to the kidneys. Reduced kidney 
+perfusion causes acute kidney injury, reflected as rising creatinine.
+This creates a vicious cycle — kidney failure worsens heart failure and 
+vice versa (cardiorenal syndrome).
+
+Clinical thresholds used in this system:
+- Above 1.5 mg/dL: Elevated — kidney stress flag triggered
+- Above 2.0 mg/dL: Severely elevated — nephrology consult recommended
+- Combined with low EF: Cardiorenal syndrome pattern — HIGH RISK
+
+Real data from this patient population:
+- Patients who survived averaged creatinine of 1.18 mg/dL
+- Patients who died averaged creatinine of 1.84 mg/dL
+- Difference of 0.66 mg/dL is a strong mortality predictor
+
+## SERUM SODIUM EXPLAINED
+
+What it is:
+Sodium is an electrolyte that regulates fluid balance in the body.
+In heart failure, the body retains fluid (causing edema) and dilutes
+sodium concentration, leading to hyponatremia (low sodium).
+
+Why it matters in heart failure:
+Low sodium in heart failure reflects neurohormonal activation — the body
+is desperately trying to maintain circulation by retaining fluid.
+This dilutional hyponatremia is a marker of disease severity.
+
+Clinical thresholds used in this system:
+- Below 135 mEq/L: Hyponatremia — fluid imbalance flag triggered
+- Below 130 mEq/L: Moderate — active fluid restriction required
+- Below 125 mEq/L: Severe — emergency management required
+
+## KIDNEY-HEART RISK INDEX EXPLAINED
+
+What it is:
+A composite risk marker created for this system, triggered when BOTH:
+- Serum creatinine is above 1.5 mg/dL (kidney stress), AND
+- Ejection fraction is below 30% (severe cardiac dysfunction)
+
+Why both together matters:
+Either condition alone is serious. Both together indicates bidirectional 
+organ failure — the heart and kidneys are failing simultaneously.
+This pattern (cardiorenal syndrome) dramatically worsens prognosis.
+
+Real data from this patient population:
+- Patients WITHOUT kidney-heart risk: 11.4% mortality rate
+- Patients WITH kidney-heart risk: 72.7% mortality rate
+- This single composite feature is the strongest predictor in the model
+
+## AGE AND MORTALITY
+
+Clinical significance of age in this population:
+- Under 50 years: 23% mortality rate
+- 50-60 years: 25% mortality rate  
+- 60-70 years: 34% mortality rate
+- 70-75 years: 40% mortality rate
+- Above 75 years: 61% mortality rate
+
+Age accelerates the risk associated with low EF and kidney stress.
+Elderly patients have less physiological reserve to compensate.
+The age-creatinine interaction feature captures this combined effect.
+
+## COMORBIDITY SCORE EXPLAINED
+
+What it is:
+A simple additive score counting two binary comorbidities:
+- Anaemia (1 point if present)
+- High blood pressure (1 point if present)
+Score range: 0 (neither) to 2 (both present)
+
+Why it matters:
+Each additional comorbidity reduces physiological reserve and 
+increases the burden on an already compromised heart.
+A score of 2 indicates the patient has multiple compounding risk factors.

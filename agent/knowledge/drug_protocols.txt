@@ -1,0 +1,102 @@
+# Heart Failure Drug Protocols
+# Source: ACC/AHA 2022 Guidelines, ESC 2021 Guidelines
+# For demonstration purposes only — not for clinical use
+# Always verify with current prescribing guidelines before clinical use
+
+## FIRST LINE THERAPY FOR HFrEF (EF BELOW 40%)
+
+The four pillars of guideline-directed medical therapy (GDMT):
+
+1. ACE INHIBITOR or ARB or ARNI
+   Examples: Enalapril, Lisinopril (ACE); Valsartan (ARB); 
+             Sacubitril/Valsartan — Entresto (ARNI — preferred)
+   Starting dose: Enalapril 2.5mg twice daily
+   Target dose: Enalapril 10-20mg twice daily
+   Purpose: Reduces afterload, prevents cardiac remodeling
+   Contraindications: Bilateral renal artery stenosis, pregnancy,
+                      history of angioedema, creatinine >3.0 mg/dL
+
+2. BETA-BLOCKER
+   Examples: Carvedilol, Metoprolol succinate, Bisoprolol
+   Starting dose: Carvedilol 3.125mg twice daily
+   Target dose: Carvedilol 25mg twice daily
+   Purpose: Reduces heart rate, prevents sudden cardiac death
+   Contraindications: Acute decompensated HF, severe bradycardia,
+                      severe asthma, cardiogenic shock
+   Note: Must be euvolemic before starting — do not start in fluid overload
+
+3. MINERALOCORTICOID RECEPTOR ANTAGONIST (MRA)
+   Examples: Spironolactone, Eplerenone
+   Starting dose: Spironolactone 25mg daily
+   Target dose: Spironolactone 25-50mg daily
+   Purpose: Reduces fibrosis, improves survival
+   Contraindications: Creatinine >2.5 mg/dL (male) or >2.0 (female),
+                      potassium above 5.0 mEq/L, significant renal impairment
+
+4. SGLT2 INHIBITOR
+   Examples: Dapagliflozin (Farxiga), Empagliflozin (Jardiance)
+   Dose: Dapagliflozin 10mg daily
+   Purpose: Reduces hospitalization and cardiovascular death
+   Recommended regardless of diabetes status
+   Contraindications: eGFR below 25, recurrent UTIs
+
+## DIURETICS FOR FLUID OVERLOAD
+
+LOOP DIURETICS (first choice for volume overload):
+   Examples: Furosemide (Lasix), Bumetanide, Torsemide
+   Starting dose: Furosemide 20-40mg daily
+   Adjust based on fluid status and kidney function
+   Monitor: Creatinine, electrolytes, daily weight
+   Goal: Remove 0.5-1.0 kg per day in chronic overload
+         Remove 1.0-2.0 kg per day in acute decompensation
+
+THIAZIDE DIURETICS (add-on for diuretic resistance):
+   Example: Metolazone 2.5-5mg 30 minutes before furosemide
+   Use cautiously — monitor electrolytes closely
+
+## SPECIAL CONSIDERATIONS BY RISK LEVEL
+
+LOW RISK PATIENTS (EF 40-50%, normal creatinine, normal sodium):
+- Optimize GDMT to target doses
+- Lifestyle modification: salt restriction, fluid restriction
+- Regular monitoring: every 3-6 months
+- Exercise cardiac rehabilitation recommended
+
+MEDIUM RISK PATIENTS (EF 30-40%, creatinine 1.2-1.5):
+- Start or optimize all four GDMT pillars
+- Increase monitoring frequency: every 4-8 weeks
+- Consider device therapy evaluation (ICD if EF <35%)
+- Nephrology input if creatinine trending upward
+
+HIGH RISK PATIENTS (EF below 30%, creatinine above 1.5):
+- Immediate specialist review
+- Caution with ACE inhibitors — may worsen kidney function
+- Reduce or hold diuretics if creatinine rising acutely
+- Consider inpatient admission for optimization
+- ICD referral strongly recommended if EF <35%
+- Cardiac transplant evaluation if refractory
+
+CRITICAL PATIENTS (EF below 20%, multi-organ involvement):
+- ICU admission
+- IV inotropes may be required (Dobutamine, Milrinone)
+- Continuous hemodynamic monitoring
+- Urgent cardiology and nephrology co-management
+- Mechanical circulatory support consideration (IABP, LVAD)
+- Palliative care discussion if appropriate
+
+## MONITORING PARAMETERS
+
+Renal function monitoring:
+- Check creatinine and electrolytes within 1-2 weeks of any dose change
+- If creatinine rises more than 30% above baseline — hold ACE/ARB
+- If potassium rises above 5.5 mEq/L — hold MRA immediately
+
+Blood pressure targets:
+- Target systolic BP: 100-130 mmHg in HFrEF
+- Do not titrate GDMT if systolic BP below 90 mmHg
+- Hypotension with symptoms — reduce diuretics first
+
+Weight monitoring:
+- Daily weight at same time each morning
+- Weight gain of 2kg in 2 days or 3kg in 1 week:
+  Increase diuretic dose or contact clinical team immediately

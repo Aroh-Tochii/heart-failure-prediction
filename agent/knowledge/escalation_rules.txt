@@ -1,0 +1,124 @@
+# Heart Failure Escalation Rules and Clinical Decision Pathways
+# Source: ACC/AHA 2022 Guidelines, ESC 2021 Guidelines, Hospital Triage Protocols
+# For demonstration purposes only — not for clinical use
+
+## IMMEDIATE ICU ESCALATION — Act within 1 hour
+
+Escalate to ICU immediately if ANY of the following:
+- Ejection fraction below 20% with signs of acute decompensation
+- Systolic blood pressure below 80 mmHg not responding to fluids
+- Creatinine rising more than 0.5 mg/dL in 24 hours
+- Serum sodium below 120 mEq/L
+- Oxygen saturation below 88% on room air
+- Signs of cardiogenic shock: cold extremities, altered consciousness,
+  urine output below 30mL/hour
+- Ventricular tachycardia or fibrillation on ECG
+- New onset complete heart block
+
+Action: Call senior cardiologist IMMEDIATELY
+        Activate ICU bed
+        Prepare IV access, continuous monitoring
+        Consider IV inotropes (Dobutamine starting dose 2.5 mcg/kg/min)
+
+## URGENT CARDIOLOGY REVIEW — Act within 4 hours
+
+Refer urgently to cardiology if:
+- Ejection fraction below 30% (new finding or acute decline)
+- Kidney-heart risk pattern: creatinine above 1.5 AND EF below 30%
+- Serum sodium 120-130 mEq/L with worsening symptoms
+- Creatinine above 2.0 mg/dL in setting of heart failure
+- New significant mitral or aortic valve dysfunction
+- Patient with EF below 35% not yet referred for ICD evaluation
+- Rapid deterioration from previously stable state
+
+Action: Contact on-call cardiologist
+        Obtain urgent ECG and chest X-ray
+        Review and adjust current medications
+        Consider hospital admission
+
+## SAME DAY CLINICAL REVIEW — Act within 12 hours
+
+Schedule same day review for:
+- Ejection fraction 30-40% with new symptoms
+- Creatinine 1.5-2.0 mg/dL (rising trend)
+- Sodium 130-135 mEq/L (hyponatremia)
+- Weight gain 2kg in 2 days or 3kg in 1 week
+- Increasing breathlessness, leg swelling, or fatigue
+- Comorbidity score of 2 with worsening clinical picture
+
+Action: Arrange same day appointment or review
+        Check electrolytes and renal function urgently
+        Review diuretic dosing
+        Patient education on fluid and salt restriction
+
+## ROUTINE FOLLOW UP — Standard protocol
+
+Routine monitoring appropriate for:
+- Ejection fraction above 40%
+- Creatinine below 1.2 mg/dL (stable)
+- Sodium above 135 mEq/L (normal)
+- No acute deterioration
+- Well-compensated on current medications
+- Comorbidity score 0-1 with stable markers
+
+Action: Schedule follow up in 4-12 weeks
+        Repeat bloods at next visit
+        Continue current medications
+        Reinforce lifestyle advice
+
+## SPECIFIC CLINICAL SCENARIOS
+
+SCENARIO: Patient with EF 20%, creatinine 1.9, sodium 128
+Risk level: CRITICAL
+Action: IMMEDIATE ICU escalation
+        Call senior cardiologist NOW
+        Do not delay for further tests
+        IV access, continuous monitoring, prepare inotrope support
+
+SCENARIO: Patient with EF 28%, creatinine 1.6, sodium 133
+Risk level: HIGH
+Action: URGENT cardiology review within 4 hours
+        Consider hospital admission
+        Review ACE inhibitor dosing (may need dose reduction)
+        Cardiology input on ICD referral
+
+SCENARIO: Patient with EF 35%, creatinine 1.4, sodium 137
+Risk level: MEDIUM
+Action: Same day review
+        Optimize GDMT
+        Check if on all four medication pillars
+        ICD evaluation if EF remains below 35%
+
+SCENARIO: Patient with EF 45%, creatinine 1.0, sodium 140
+Risk level: LOW
+Action: Routine follow up in 6-12 weeks
+        Continue current management
+        Reinforce lifestyle modification
+        Annual echocardiogram
+
+## DOCUMENTATION REQUIREMENTS
+
+Every clinical interaction must record:
+1. Timestamp of assessment
+2. Ejection fraction value and source (echo date)
+3. Creatinine and sodium at time of assessment
+4. Risk level assigned (Low/Medium/High/Critical)
+5. Clinical action taken
+6. Clinician responsible
+7. Next review date
+
+This audit trail is required for clinical governance and 
+medico-legal protection. All predictions from this AI system
+are logged automatically to the predictions database with
+full timestamp and patient identifier.
+
+## IMPORTANT DISCLAIMER
+
+This AI system is a DECISION SUPPORT TOOL only.
+It does not replace clinical judgment.
+All recommendations must be reviewed by a qualified clinician.
+Final clinical decisions are always the responsibility of the
+treating physician or nurse practitioner.
+
+In an emergency, call your hospital emergency response team.
+Do not delay emergency care to use this system.

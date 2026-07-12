@@ -1,0 +1,105 @@
+# Heart Failure Clinical Guidelines
+# Source: ACC/AHA 2022 Heart Failure Guidelines, ESC 2021 Guidelines
+# For demonstration purposes only — not for clinical use
+
+## EJECTION FRACTION CLASSIFICATION
+
+Ejection fraction (EF) measures the percentage of blood pumped out of the 
+left ventricle with each heartbeat. Normal EF is 50-70%.
+
+EF CATEGORIES:
+- Normal (>50%): Heart pumping normally
+- Mildly reduced (41-49%): HFmrEF — Heart Failure with mildly reduced EF
+- Reduced (<40%): HFrEF — Heart Failure with reduced EF
+- Severely reduced (<30%): Critical — immediate clinical intervention required
+- Critical (<20%): Life-threatening — ICU admission strongly recommended
+
+CLINICAL SIGNIFICANCE:
+- Every 5% reduction in EF below 40% increases mortality risk by approximately 15%
+- EF below 30% combined with elevated creatinine indicates cardiorenal syndrome
+- EF below 20% requires urgent specialist escalation regardless of other markers
+
+## SERUM CREATININE AND KIDNEY FUNCTION
+
+Normal serum creatinine: 0.7-1.2 mg/dL (male), 0.5-1.1 mg/dL (female)
+
+CREATININE LEVELS AND CLINICAL MEANING:
+- Normal (0.7-1.2 mg/dL): Kidney function adequate
+- Mildly elevated (1.2-1.5 mg/dL): Monitor closely, review nephrotoxic medications
+- Elevated (1.5-2.0 mg/dL): Significant kidney stress — review diuretic dosing
+- Severely elevated (>2.0 mg/dL): Acute kidney injury likely — nephrology consult
+- Critical (>3.0 mg/dL): Possible dialysis consideration
+
+CARDIORENAL SYNDROME:
+When ejection fraction is below 30% AND creatinine is above 1.5 mg/dL,
+cardiorenal syndrome should be suspected. This bidirectional relationship 
+between heart and kidney failure significantly worsens prognosis.
+Mortality risk increases by 72.7% in patients meeting both criteria.
+
+## SERUM SODIUM AND FLUID BALANCE
+
+Normal serum sodium: 135-145 mEq/L
+
+SODIUM LEVELS AND CLINICAL MEANING:
+- Normal (135-145 mEq/L): Fluid balance adequate
+- Mild hyponatremia (130-135 mEq/L): Monitor, restrict fluid intake
+- Moderate hyponatremia (125-130 mEq/L): Active management required
+- Severe hyponatremia (<125 mEq/L): Emergency — risk of cerebral edema
+- Critical (<120 mEq/L): ICU admission, IV sodium correction required
+
+HYPONATREMIA IN HEART FAILURE:
+Low sodium in heart failure patients indicates neurohormonal activation 
+and fluid retention. It is a strong independent predictor of mortality.
+Patients with sodium below 135 mEq/L have significantly worse outcomes.
+
+## COMORBIDITY INTERACTIONS
+
+ANAEMIA IN HEART FAILURE:
+- Present in 30-50% of heart failure patients
+- Worsens symptoms and exercise tolerance
+- Associated with increased hospitalization and mortality
+- Requires investigation for iron deficiency, renal anaemia
+
+HIGH BLOOD PRESSURE IN HEART FAILURE:
+- Chronic hypertension is a leading cause of heart failure
+- In acute decompensation, elevated BP increases afterload
+- Target BP: less than 130/80 mmHg in heart failure patients
+
+DIABETES IN HEART FAILURE:
+- Diabetes present in 30-40% of heart failure patients
+- SGLT2 inhibitors now recommended regardless of diabetes status
+- Tight glucose control reduces hospitalization risk
+
+SMOKING:
+- Active smoking worsens cardiac function and exercise tolerance
+- Smoking cessation is a Class I recommendation in all heart failure patients
+
+## MORTALITY RISK STRATIFICATION
+
+LOW RISK:
+- EF above 40%
+- Creatinine below 1.2 mg/dL
+- Sodium above 135 mEq/L
+- No kidney-heart risk pattern
+- Estimated mortality probability: below 20%
+
+MEDIUM RISK:
+- EF 30-40%
+- Creatinine 1.2-1.5 mg/dL
+- Sodium 130-135 mEq/L
+- One or two comorbidities
+- Estimated mortality probability: 20-50%
+
+HIGH RISK:
+- EF below 30%
+- Creatinine above 1.5 mg/dL
+- Sodium below 130 mEq/L
+- Kidney-heart risk pattern present
+- Estimated mortality probability: above 50%
+
+CRITICAL:
+- EF below 20%
+- Creatinine above 2.0 mg/dL
+- Sodium below 125 mEq/L
+- Multiple organ involvement
+- Estimated mortality probability: above 80%
