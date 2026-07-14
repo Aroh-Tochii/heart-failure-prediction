@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: heart-failure-agent
+    runtime: docker
+    dockerfilePath: ./hf_agent_Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATA_SOURCE
+        value: csv
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: 10000

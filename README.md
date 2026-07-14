@@ -1,5 +1,7 @@
 # Heart Failure Clinical Decision Support System
 
+**Live Demo:** Deploy the Clinical AI Assistant — see [DEPLOY.md](DEPLOY.md) for a public link you can add to your GitHub profile.
+
 A production-grade machine learning system that predicts patient mortality risk and supports clinical triage decisions for heart failure patients — built as a fully containerized, monitored, and CI/CD-automated system.
 
 ## Overview
@@ -51,6 +53,12 @@ GitHub Actions CI/CD (5 jobs including clinical logic validation)
 ├── hf_train_model.py         # 3-model training with MLflow tracking
 ├── hf_eda.py                 # 8 clinical visualization charts
 ├── hf_app.py                 # FastAPI clinical decision support service
+├── hf_agent_api.py           # Clinical AI agent API + web UI
+├── hf_clinical_agent.py      # Gemini agent with RAG + clinical tools
+├── hf_agent_Dockerfile       # Docker image for public agent deploy
+├── render.yaml               # One-click Render.com deploy
+├── frontend/index.html       # Clinical AI chat interface
+├── DEPLOY.md                 # Public deployment guide
 ├── hf_monitor_drift.py       # Dual-dataset drift monitoring
 ├── hf_Dockerfile             # Container image for API service
 ├── hf_docker_compose.yml     # Orchestrates API + PostgreSQL containers

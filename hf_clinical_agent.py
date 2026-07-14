@@ -39,7 +39,20 @@ DB_CONFIG = {
 }
 
 AGENT_DIR  = Path(__file__).parent
-CHROMA_DIR = AGENT_DIR / "chroma_db"
+CHROMA_DIR = AGENT_DIR / "agent" / "chroma_db"
+DATA_SOURCE = os.getenv("DATA_SOURCE", "auto").lower()
+
+def use_csv_mode() -> bool:
+    if DATA_SOURCE == "csv":
+        return True
+    if DATA_SOURCE == "postgres":
+        return False
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        conn.close()
+        return False
+    except Exception:
+        return True
 
 # ── Gemini client ─────────────────────────────────────────────────────────────
 client = genai.Client(api_key=GEMINI_API_KEY)
@@ -143,55 +156,59 @@ def insert_and_assess_patient(patient_data: dict) -> str:
             patient_data["anaemia"] + patient_data["high_blood_pressure"]
         )
 
-        conn = get_db()
-        cur  = conn.cursor()
+        if use_csv_mode():
+            from hf_clinical_data import insert_patient
+            new_id = insert_patient(patient_data)
+        else:
+            conn = get_db()
+            cur  = conn.cursor()
+            cur.execute("SELECT MAX(id) FROM raw.patients_clinical")
+            max_id = cur.fetchone()[0] or 0
+            new_id = max_id + 1
 
-        # Get next ID
-        cur.execute("SELECT MAX(id) FROM raw.patients_clinical")
-        max_id = cur.fetchone()[0] or 0
-        new_id = max_id + 1
-
-        cur.execute("""
-            INSERT INTO raw.patients_clinical
-            (id, age, anaemia, creatinine_phosphokinase, diabetes,
-             ejection_fraction, high_blood_pressure, platelets,
-             serum_creatinine, serum_sodium, sex, smoking, time,
-             death_event, kidney_heart_risk, hyponatremia,
-             age_creatinine_interaction, comorbidity_score)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (
-            new_id,
-            patient_data["age"], patient_data["anaemia"],
-            patient_data["creatinine_phosphokinase"], patient_data["diabetes"],
-            patient_data["ejection_fraction"], patient_data["high_blood_pressure"],
-            patient_data["platelets"], patient_data["serum_creatinine"],
-            patient_data["serum_sodium"], patient_data["sex"],
-            patient_data["smoking"], patient_data["time"],
-            patient_data["death_event"],
-            patient_data["kidney_heart_risk"], patient_data["hyponatremia"],
-            patient_data["age_creatinine_interaction"],
-            patient_data["comorbidity_score"]
-        ))
-        conn.commit()
+            cur.execute("""
+                INSERT INTO raw.patients_clinical
+                (id, age, anaemia, creatinine_phosphokinase, diabetes,
+                 ejection_fraction, high_blood_pressure, platelets,
+                 serum_creatinine, serum_sodium, sex, smoking, time,
+                 death_event, kidney_heart_risk, hyponatremia,
+                 age_creatinine_interaction, comorbidity_score)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                new_id,
+                patient_data["age"], patient_data["anaemia"],
+                patient_data["creatinine_phosphokinase"], patient_data["diabetes"],
+                patient_data["ejection_fraction"], patient_data["high_blood_pressure"],
+                patient_data["platelets"], patient_data["serum_creatinine"],
+                patient_data["serum_sodium"], patient_data["sex"],
+                patient_data["smoking"], patient_data["time"],
+                patient_data["death_event"],
+                patient_data["kidney_heart_risk"], patient_data["hyponatremia"],
+                patient_data["age_creatinine_interaction"],
+                patient_data["comorbidity_score"]
+            ))
+            conn.commit()
 
         # Run risk assessment
         risk = calculate_risk(patient_data)
 
         # Log prediction
-        try:
-            cur.execute("""
-                INSERT INTO predictions.risk_predictions
-                (patient_id, risk_probability, risk_level, model_used, predicted_at)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (
-                new_id, risk["probability"], risk["risk_level"],
-                "ClinicalAI-RuleBasedV1", datetime.now()
-            ))
-            conn.commit()
-        except Exception:
-            conn.rollback()
-
-        cur.close(); conn.close()
+        if not use_csv_mode():
+            try:
+                cur.execute("""
+                    INSERT INTO predictions.risk_predictions
+                    (patient_id, risk_probability, risk_level, model_used, predicted_at)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (
+                    new_id, risk["probability"], risk["risk_level"],
+                    "ClinicalAI-RuleBasedV1", datetime.now()
+                ))
+                conn.commit()
+            except Exception:
+                conn.rollback()
+            finally:
+                cur.close()
+                conn.close()
 
         flags_text = "\n".join([f"  • {f}" for f in risk["flags"]]) if risk["flags"] else "  None"
 
@@ -229,14 +246,20 @@ Patient ID {new_id} stored in heart_failure_db."""
 # ══════════════════════════════════════════════════════════════════════════════
 def get_patient_profile(patient_id: int) -> str:
     try:
-        conn = get_db()
-        df   = pd.read_sql(
-            f"SELECT * FROM raw.patients_clinical WHERE id = {patient_id}", conn
-        )
-        conn.close()
-        if df.empty:
-            return f"No patient found with ID {patient_id}. Valid IDs are 1-299."
-        r = df.iloc[0]
+        if use_csv_mode():
+            from hf_clinical_data import get_patient_row
+            r = get_patient_row(patient_id)
+            if r is None:
+                return f"No patient found with ID {patient_id}. Valid IDs are 1-299."
+        else:
+            conn = get_db()
+            df   = pd.read_sql(
+                f"SELECT * FROM raw.patients_clinical WHERE id = {patient_id}", conn
+            )
+            conn.close()
+            if df.empty:
+                return f"No patient found with ID {patient_id}. Valid IDs are 1-299."
+            r = df.iloc[0]
         risk = calculate_risk(r.to_dict())
         flags_text = "\n".join([f"  • {f}" for f in risk["flags"]]) if risk["flags"] else "  None"
         outcome = "DIED during follow-up" if r["death_event"] == 1 else "SURVIVED follow-up"
@@ -274,17 +297,24 @@ RECOMMENDATION:
 # ══════════════════════════════════════════════════════════════════════════════
 def get_high_risk_patients(limit: int = 10) -> str:
     try:
-        conn = get_db()
-        df   = pd.read_sql(f"""
-            SELECT id, age, ejection_fraction, serum_creatinine,
-                   serum_sodium, kidney_heart_risk, comorbidity_score, death_event
-            FROM raw.patients_clinical
-            ORDER BY kidney_heart_risk DESC,
-                     ejection_fraction ASC,
-                     serum_creatinine DESC
-            LIMIT {limit}
-        """, conn)
-        conn.close()
+        if use_csv_mode():
+            from hf_clinical_data import get_dataframe
+            df = get_dataframe().sort_values(
+                ["kidney_heart_risk", "ejection_fraction", "serum_creatinine"],
+                ascending=[False, True, False],
+            ).head(limit)
+        else:
+            conn = get_db()
+            df   = pd.read_sql(f"""
+                SELECT id, age, ejection_fraction, serum_creatinine,
+                       serum_sodium, kidney_heart_risk, comorbidity_score, death_event
+                FROM raw.patients_clinical
+                ORDER BY kidney_heart_risk DESC,
+                         ejection_fraction ASC,
+                         serum_creatinine DESC
+                LIMIT {limit}
+            """, conn)
+            conn.close()
 
         result = f"TOP {limit} HIGH-RISK PATIENTS\n{'='*55}\n"
         for _, r in df.iterrows():
@@ -302,24 +332,44 @@ def get_high_risk_patients(limit: int = 10) -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 def get_population_statistics() -> str:
     try:
-        conn = get_db()
-        cur  = conn.cursor()
-        cur.execute("""
-            SELECT COUNT(*), SUM(death_event), AVG(age),
-                   AVG(ejection_fraction), AVG(serum_creatinine), AVG(serum_sodium),
-                   SUM(CASE WHEN ejection_fraction < 20 THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN ejection_fraction < 30 THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN ejection_fraction < 40 THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN serum_creatinine > 1.5 THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN serum_creatinine > 2.0 THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN kidney_heart_risk THEN 1 ELSE 0 END),
-                   SUM(CASE WHEN serum_sodium < 135 THEN 1 ELSE 0 END),
-                   SUM(anaemia), SUM(high_blood_pressure), SUM(diabetes)
-            FROM raw.patients_clinical
-        """)
-        r = cur.fetchone()
-        cur.close(); conn.close()
-        t, d = r[0], r[1]
+        if use_csv_mode():
+            from hf_clinical_data import get_dataframe
+            df = get_dataframe()
+            t = len(df)
+            d = int(df["death_event"].sum())
+            r = [
+                t, d, df["age"].mean(), df["ejection_fraction"].mean(),
+                df["serum_creatinine"].mean(), df["serum_sodium"].mean(),
+                int((df["ejection_fraction"] < 20).sum()),
+                int((df["ejection_fraction"] < 30).sum()),
+                int((df["ejection_fraction"] < 40).sum()),
+                int((df["serum_creatinine"] > 1.5).sum()),
+                int((df["serum_creatinine"] > 2.0).sum()),
+                int(df["kidney_heart_risk"].sum()),
+                int((df["serum_sodium"] < 135).sum()),
+                int(df["anaemia"].sum()),
+                int(df["high_blood_pressure"].sum()),
+                int(df["diabetes"].sum()),
+            ]
+        else:
+            conn = get_db()
+            cur  = conn.cursor()
+            cur.execute("""
+                SELECT COUNT(*), SUM(death_event), AVG(age),
+                       AVG(ejection_fraction), AVG(serum_creatinine), AVG(serum_sodium),
+                       SUM(CASE WHEN ejection_fraction < 20 THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN ejection_fraction < 30 THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN ejection_fraction < 40 THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN serum_creatinine > 1.5 THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN serum_creatinine > 2.0 THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN kidney_heart_risk THEN 1 ELSE 0 END),
+                       SUM(CASE WHEN serum_sodium < 135 THEN 1 ELSE 0 END),
+                       SUM(anaemia), SUM(high_blood_pressure), SUM(diabetes)
+                FROM raw.patients_clinical
+            """)
+            r = cur.fetchone()
+            cur.close(); conn.close()
+            t, d = r[0], r[1]
         return f"""
 PATIENT POPULATION — {t} total patients
 Deaths: {d} ({d/t*100:.1f}%) | Survivors: {t-d} ({(t-d)/t*100:.1f}%)
@@ -503,15 +553,25 @@ def route_intent(question: str) -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 def compare_survivors_vs_deaths() -> str:
     try:
-        conn = get_db()
-        df   = pd.read_sql("""
-            SELECT death_event, COUNT(*) n,
-                   AVG(age) age, AVG(ejection_fraction) ef,
-                   AVG(serum_creatinine) cr, AVG(serum_sodium) na
-            FROM raw.patients_clinical
-            GROUP BY death_event ORDER BY death_event
-        """, conn)
-        conn.close()
+        if use_csv_mode():
+            from hf_clinical_data import get_dataframe
+            df = get_dataframe().groupby("death_event").agg(
+                n=("id", "count"),
+                age=("age", "mean"),
+                ef=("ejection_fraction", "mean"),
+                cr=("serum_creatinine", "mean"),
+                na=("serum_sodium", "mean"),
+            ).reset_index()
+        else:
+            conn = get_db()
+            df   = pd.read_sql("""
+                SELECT death_event, COUNT(*) n,
+                       AVG(age) age, AVG(ejection_fraction) ef,
+                       AVG(serum_creatinine) cr, AVG(serum_sodium) na
+                FROM raw.patients_clinical
+                GROUP BY death_event ORDER BY death_event
+            """, conn)
+            conn.close()
         s = df[df["death_event"]==0].iloc[0]
         d = df[df["death_event"]==1].iloc[0]
         return f"""

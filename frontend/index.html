@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Failure Clinical AI Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--surface3:#222d42;
+  --border:#1f2d47;--border2:#2a3a58;
+  --blue:#2563eb;--blue-light:#3b82f6;--blue-glow:rgba(37,99,235,0.15);
+  --green:#10b981;--green-bg:rgba(16,185,129,0.12);
+  --orange:#f59e0b;--orange-bg:rgba(245,158,11,0.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);
+  --purple:#8b5cf6;--purple-bg:rgba(139,92,246,0.12);
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+}
+html{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
+body{min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;
+  height:56px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff}
+.brand-name{font-size:15px;font-weight:600}
+.brand-sub{font-size:11px;color:var(--text3);padding:2px 8px;
+  background:var(--surface3);border-radius:20px;border:1px solid var(--border2)}
+.status-badges{display:flex;gap:8px}
+.badge{display:flex;align-items:center;gap:5px;font-size:11px;
+  padding:4px 10px;border-radius:20px;border:1px solid}
+.badge-green{color:var(--green);background:var(--green-bg);border-color:rgba(16,185,129,0.2)}
+.badge-blue{color:var(--blue-light);background:var(--blue-glow);border-color:rgba(59,130,246,0.2)}
+.pulse{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 56px)}
+
+/* LEFT — CHAT */
+.chat-panel{display:flex;flex-direction:column;flex:1;border-right:1px solid var(--border)}
+
+.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-title{font-size:14px;font-weight:600}
+.chat-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.clear-btn{padding:5px 12px;background:transparent;border:1px solid var(--border2);
+  border-radius:6px;color:var(--text3);font-size:11px;cursor:pointer;transition:all 0.15s}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.message{display:flex;gap:10px;max-width:90%}
+.message.user{align-self:flex-end;flex-direction:row-reverse}
+.message.assistant{align-self:flex-start}
+
+.msg-avatar{width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.msg-avatar.user{background:var(--blue);color:#fff}
+.msg-avatar.ai{background:linear-gradient(135deg,var(--green),var(--blue));color:#fff}
+
+.msg-bubble{padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.6;max-width:100%}
+.message.user .msg-bubble{background:var(--blue);color:#fff;border-radius:12px 4px 12px 12px}
+.message.assistant .msg-bubble{background:var(--surface2);border:1px solid var(--border);
+  border-radius:4px 12px 12px 12px;color:var(--text)}
+
+.msg-bubble h3{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.msg-bubble strong{color:var(--text);font-weight:600}
+.msg-bubble ul{margin:8px 0 8px 16px}
+.msg-bubble li{margin-bottom:4px}
+
+.risk-critical{color:#f87171;font-weight:600}
+.risk-high{color:var(--orange);font-weight:600}
+.risk-medium{color:#fbbf24;font-weight:600}
+.risk-low{color:var(--green);font-weight:600}
+
+.typing-indicator{display:flex;gap:4px;padding:12px 16px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:4px 12px 12px 12px;width:fit-content}
+.typing-dot{width:6px;height:6px;background:var(--text3);border-radius:50%;
+  animation:typing 1.4s infinite ease-in-out}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typing{0%,80%,100%{transform:scale(0.8);opacity:0.5}40%{transform:scale(1);opacity:1}}
+
+.chat-input-area{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.quick-prompts{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.quick-btn{padding:4px 10px;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:20px;font-size:11px;color:var(--text2);cursor:pointer;transition:all 0.15s;
+  white-space:nowrap}
+.quick-btn:hover{border-color:var(--blue);color:var(--blue-light)}
+.input-row{display:flex;gap:8px}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text);
+  font-family:'Inter',sans-serif;resize:none;outline:none;height:44px;
+  transition:border-color 0.2s;line-height:1.4}
+.chat-input:focus{border-color:var(--blue)}
+.chat-input::placeholder{color:var(--text3)}
+.send-btn{background:var(--blue);border:none;border-radius:10px;
+  width:44px;height:44px;color:#fff;cursor:pointer;font-size:18px;
+  transition:all 0.15s;flex-shrink:0}
+.send-btn:hover{background:var(--blue-light)}
+.send-btn:disabled{background:var(--surface3);cursor:not-allowed}
+
+/* RIGHT — FORM + STATS */
+.right-panel{width:340px;flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto}
+.right-panel::-webkit-scrollbar{width:4px}
+.right-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.panel-section{padding:16px;border-bottom:1px solid var(--border)}
+.panel-title{font-size:12px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;
+  display:flex;align-items:center;gap:6px}
+
+/* PATIENT FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:span 2}
+.form-label{font-size:11px;color:var(--text3);font-weight:500}
+.form-input{background:var(--surface2);border:1px solid var(--border2);
+  border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);
+  font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s}
+.form-input:focus{border-color:var(--blue)}
+select.form-input option{background:var(--surface)}
+.form-submit{width:100%;padding:10px;background:var(--blue);border:none;
+  border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;
+  margin-top:10px;transition:all 0.15s;font-family:'Inter',sans-serif}
+.form-submit:hover{background:var(--blue-light)}
+.form-submit:disabled{background:var(--surface3);cursor:not-allowed}
+
+/* STATS CARDS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.red::before{background:var(--red)}
+.stat-card.orange::before{background:var(--orange)}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;
+  letter-spacing:0.06em;margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* RISK INDICATOR */
+.risk-indicator{display:flex;align-items:center;gap:8px;padding:10px 12px;
+  border-radius:8px;border:1px solid;margin-top:8px;font-size:12px;font-weight:500}
+.risk-indicator.critical{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171}
+.risk-indicator.high{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);color:var(--orange)}
+.risk-indicator.medium{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.2);color:#fbbf24}
+.risk-indicator.low{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);color:var(--green)}
+
+/* WELCOME MESSAGE */
+.welcome{text-align:center;padding:40px 20px;color:var(--text3)}
+.welcome-icon{font-size:40px;margin-bottom:12px}
+.welcome-title{font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.welcome-text{font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">♥</div>
+    <span class="brand-name">Heart Failure Clinical AI</span>
+    <span class="brand-sub">Decision Support System</span>
+  </div>
+  <div class="status-badges">
+    <div class="badge badge-green"><div class="pulse"></div>Agent Online</div>
+    <div class="badge badge-blue"><div class="pulse"></div>RAG Active</div>
+    <div class="badge badge-green"><div class="pulse"></div>299+ Patients</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: CHAT -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title">Clinical AI Assistant</div>
+        <div class="chat-sub">Ask anything about your patients — natural language supported</div>
+      </div>
+      <button class="clear-btn" onclick="clearChat()">Clear chat</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="welcome">
+        <div class="welcome-icon">🏥</div>
+        <div class="welcome-title">Heart Failure Clinical AI Assistant</div>
+        <div class="welcome-text">
+          Ask clinical questions, admit new patients, or use the form on the right.<br><br>
+          Powered by Gemini AI + RAG clinical guidelines + live patient database.
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="quick-prompts">
+        <button class="quick-btn" onclick="sendQuick('Which patients are at highest risk?')">⚠ High risk patients</button>
+        <button class="quick-btn" onclick="sendQuick('How many patients have low ejection fraction?')">📊 EF statistics</button>
+        <button class="quick-btn" onclick="sendQuick('Compare survivors vs non-survivors')">📈 Compare groups</button>
+        <button class="quick-btn" onclick="sendQuick('What is the mortality rate in the database?')">💀 Mortality rate</button>
+        <button class="quick-btn" onclick="sendQuick('Show me patient 23')">👤 Patient 23</button>
+        <button class="quick-btn" onclick="sendQuick('What treatment for EF below 30%?')">💊 Treatment guidelines</button>
+      </div>
+      <div class="input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Type a clinical question or describe a new patient..."
+          onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM + STATS -->
+  <div class="right-panel">
+
+    <!-- PATIENT INTAKE FORM -->
+    <div class="panel-section">
+      <div class="panel-title">⊕ New Patient Intake</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Age (years)</label>
+          <input type="number" class="form-input" id="f-age" placeholder="65" min="18" max="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sex</label>
+          <select class="form-input" id="f-sex">
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ejection Fraction %</label>
+          <input type="number" class="form-input" id="f-ef" placeholder="38" min="5" max="80">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Creatinine (mg/dL)</label>
+          <input type="number" class="form-input" id="f-creatinine" placeholder="1.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Serum Sodium</label>
+          <input type="number" class="form-input" id="f-sodium" placeholder="137" min="100" max="160">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Platelets (k/mL)</label>
+          <input type="number" class="form-input" id="f-platelets" placeholder="263000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Anaemia</label>
+          <select class="form-input" id="f-anaemia">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Diabetes</label>
+          <select class="form-input" id="f-diabetes">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">High Blood Pressure</label>
+          <select class="form-input" id="f-hbp">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Smoking</label>
+          <select class="form-input" id="f-smoking">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+      <button class="form-submit" id="admitBtn" onclick="admitPatient()">
+        Admit Patient & Assess Risk
+      </button>
+    </div>
+
+    <!-- POPULATION STATS -->
+    <div class="panel-section">
+      <div class="panel-title">📊 Population Overview</div>
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-label">Total Patients</div>
+          <div class="stat-val" id="stat-total">—</div>
+          <div class="stat-sub">in database</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Mortality Rate</div>
+          <div class="stat-val" id="stat-mortality">—</div>
+          <div class="stat-sub">death events</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-label">Critical EF</div>
+          <div class="stat-val" id="stat-ef">—</div>
+          <div class="stat-sub">EF below 30%</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Avg Sodium</div>
+          <div class="stat-val" id="stat-sodium">—</div>
+          <div class="stat-sub">mEq/L average</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK RISK CALCULATOR -->
+    <div class="panel-section">
+      <div class="panel-title">⚡ Quick Risk Estimate</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Ejection Fraction %</label>
+        <input type="range" min="5" max="75" value="38" id="risk-ef"
+          oninput="updateRisk()" style="width:100%;accent-color:var(--blue)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px">
+          <span>5% (Critical)</span><span id="ef-val">38%</span><span>75% (Normal)</span>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Serum Creatinine (mg/dL)</label>
+        <input type="range" min="0.5" max="4" step="0.1" value="1.0" id="risk-cr"
+          oninput="updateRisk()" style="width:100%;accent-color:var(--blue)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px">
+          <span>0.5</span><span id="cr-val">1.0</span><span>4.0</span>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Serum Sodium (mEq/L)</label>
+        <input type="range" min="110" max="148" value="137" id="risk-na"
+          oninput="updateRisk()" style="width:100%;accent-color:var(--blue)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:2px">
+          <span>110</span><span id="na-val">137</span><span>148</span>
+        </div>
+      </div>
+      <div class="risk-indicator low" id="risk-result">
+        <span id="risk-icon">✓</span>
+        <span id="risk-text">LOW RISK — Routine follow-up</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let chatHistory = [];
+let isLoading  = false;
+
+// ── Load stats on startup ─────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/stats`);
+    if (!r.ok) return;
+    const data = await r.json();
+    const text = data.stats;
+    // Parse key numbers from stats text
+    const total    = text.match(/(\d+) total patients/)?.[1] || '—';
+    const deaths   = text.match(/Deaths: (\d+)/)?.[1] || '—';
+    const deathPct = text.match(/Deaths: \d+ \((\d+\.?\d*)%\)/)?.[1] || '';
+    const critEF   = text.match(/Critical EF.*?(\d+) patients/)?.[1] || '—';
+    const sodium   = text.match(/Avg Sodium: (\d+\.?\d*)/)?.[1] || '—';
+    document.getElementById('stat-total').textContent    = total;
+    document.getElementById('stat-mortality').textContent = deathPct ? `${deathPct}%` : deaths;
+    document.getElementById('stat-ef').textContent       = critEF;
+    document.getElementById('stat-sodium').textContent   = sodium ? parseFloat(sodium).toFixed(0) : '—';
+  } catch(e) {
+    // API not connected — show dashes
+  }
+}
+
+// ── Quick risk calculator ─────────────────────────────────────────────────────
+function updateRisk() {
+  const ef = parseFloat(document.getElementById('risk-ef').value);
+  const cr = parseFloat(document.getElementById('risk-cr').value);
+  const na = parseFloat(document.getElementById('risk-na').value);
+  document.getElementById('ef-val').textContent = ef + '%';
+  document.getElementById('cr-val').textContent = cr.toFixed(1);
+  document.getElementById('na-val').textContent = na;
+
+  let score = 0;
+  if (ef < 20)       score += 40;
+  else if (ef < 30)  score += 30;
+  else if (ef < 40)  score += 20;
+  if (cr > 2.0)      score += 30;
+  else if (cr > 1.5) score += 20;
+  if (na < 125)      score += 20;
+  else if (na < 135) score += 12;
+  if (cr > 1.5 && ef < 30) score += 15;
+
+  const prob = Math.min(score / 100, 0.99);
+  const el   = document.getElementById('risk-result');
+  const icon = document.getElementById('risk-icon');
+  const text = document.getElementById('risk-text');
+
+  if (prob >= 0.8) {
+    el.className='risk-indicator critical'; icon.textContent='🚨';
+    text.textContent=`CRITICAL — ${(prob*100).toFixed(0)}% risk — ICU escalation`;
+  } else if (prob >= 0.6) {
+    el.className='risk-indicator high'; icon.textContent='⚠';
+    text.textContent=`HIGH — ${(prob*100).toFixed(0)}% risk — Urgent cardiology`;
+  } else if (prob >= 0.3) {
+    el.className='risk-indicator medium'; icon.textContent='⚡';
+    text.textContent=`MEDIUM — ${(prob*100).toFixed(0)}% risk — Same day review`;
+  } else {
+    el.className='risk-indicator low'; icon.textContent='✓';
+    text.textContent=`LOW — ${(prob*100).toFixed(0)}% risk — Routine follow-up`;
+  }
+}
+
+// ── Chat functions ────────────────────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+function clearChat() {
+  chatHistory = [];
+  document.getElementById('chatMessages').innerHTML = `
+    <div class="welcome">
+      <div class="welcome-icon">🏥</div>
+      <div class="welcome-title">Chat cleared</div>
+      <div class="welcome-text">Ask a new clinical question to begin.</div>
+    </div>`;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const msg   = input.value.trim();
+  if (!msg || isLoading) return;
+
+  input.value = '';
+  isLoading   = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', msg);
+  const typingId = addTyping();
+
+  try {
+    const r = await fetch(`${API}/chat`, {
+      method:  'POST',
+      headers: {'Content-Type': 'application/json'},
+      body:    JSON.stringify({message: msg, history: chatHistory})
+    });
+
+    removeTyping(typingId);
+
+    if (!r.ok) throw new Error(`API error: ${r.status}`);
+    const data = await r.json();
+
+    addMessage('assistant', data.response, data.intent);
+    chatHistory.push({role:'user',  text: msg});
+    chatHistory.push({role:'model', text: data.response});
+    if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
+
+    // Reload stats if a new patient was admitted
+    if (data.intent === 'new_patient') loadStats();
+
+  } catch(e) {
+    removeTyping(typingId);
+    addMessage('assistant',
+      `⚠ Could not connect to the clinical AI agent.\n\nMake sure the API is running:\n\`uvicorn hf_agent_api:app --port 8004\`\n\nError: ${e.message}`);
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function formatResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/### (.*)/g, '<h3>$1</h3>')
+    .replace(/## (.*)/g, '<h3>$1</h3>')
+    .replace(/CRITICAL/g, '<span class="risk-critical">CRITICAL</span>')
+    .replace(/URGENT/g, '<span class="risk-critical">URGENT</span>')
+    .replace(/HIGH RISK/g, '<span class="risk-high">HIGH RISK</span>')
+    .replace(/MEDIUM/g, '<span class="risk-medium">MEDIUM</span>')
+    .replace(/\n/g, '<br>');
+}
+
+function addMessage(role, text, intent) {
+  const container = document.getElementById('chatMessages');
+  // Remove welcome message
+  const welcome = container.querySelector('.welcome');
+  if (welcome) welcome.remove();
+
+  const div  = document.createElement('div');
+  div.className = `message ${role}`;
+  const avatar = role === 'user' ? 'Dr' : '♥';
+  const avatarClass = role === 'user' ? 'user' : 'ai';
+
+  div.innerHTML = `
+    <div class="msg-avatar ${avatarClass}">${avatar}</div>
+    <div class="msg-bubble">${role === 'assistant' ? formatResponse(text) : text}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+let typingCount = 0;
+function addTyping() {
+  const id   = `typing-${++typingCount}`;
+  const container = document.getElementById('chatMessages');
+  const div  = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = id;
+  div.innerHTML = `
+    <div class="msg-avatar ai">♥</div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+// ── Patient form admit ────────────────────────────────────────────────────────
+async function admitPatient() {
+  const age      = document.getElementById('f-age').value;
+  const sex      = document.getElementById('f-sex').value;
+  const ef       = document.getElementById('f-ef').value;
+  const creat    = document.getElementById('f-creatinine').value;
+  const sodium   = document.getElementById('f-sodium').value;
+  const plates   = document.getElementById('f-platelets').value;
+  const anaemia  = document.getElementById('f-anaemia').value;
+  const diabetes = document.getElementById('f-diabetes').value;
+  const hbp      = document.getElementById('f-hbp').value;
+  const smoking  = document.getElementById('f-smoking').value;
+
+  if (!age || !ef || !creat || !sodium) {
+    alert('Please fill in: Age, Ejection Fraction, Creatinine, and Sodium');
+    return;
+  }
+
+  const sexLabel = sex === '1' ? 'male' : 'female';
+  const parts = [
+    `New patient, ${age} year old ${sexLabel}`,
+    `ejection fraction ${ef}%`,
+    `creatinine ${creat} mg/dL`,
+    `sodium ${sodium} mEq/L`,
+  ];
+  if (plates)               parts.push(`platelets ${plates}`);
+  if (anaemia  === '1')    parts.push('anaemia yes');
+  if (diabetes === '1')    parts.push('diabetes yes');
+  if (hbp      === '1')    parts.push('high blood pressure yes');
+  if (smoking  === '1')    parts.push('smoking yes');
+
+  const message = parts.join(', ');
+  document.getElementById('chatInput').value = message;
+  document.getElementById('admitBtn').disabled = true;
+  document.getElementById('admitBtn').textContent = 'Admitting...';
+
+  await sendMessage();
+
+  document.getElementById('admitBtn').disabled = false;
+  document.getElementById('admitBtn').textContent = 'Admit Patient & Assess Risk';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadStats();
+updateRisk();
+</script>
+</body>
+</html>
